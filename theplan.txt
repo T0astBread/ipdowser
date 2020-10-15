@@ -1,0 +1,27 @@
+get own IP address
+load Tor guard list
+	parse
+	check if fresh
+	fetch if necessary
+	parse if necessary
+start pcap
+
+on packet
+	is it IP?
+	no: ignore
+	yes:
+		is my IP either src or dst?
+		no: panic
+		yes:
+			find out com. partner IP
+			is IP known good?
+			yes: continue
+			no:
+				is IP known bad?
+				yes: increment bad counter and continue
+				no:
+					is IP in Tor guards?
+					yes: add to known good and continue
+					no:
+						add to known bad and SCREAM
+	
