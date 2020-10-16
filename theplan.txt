@@ -10,6 +10,11 @@ on packet
 	is it IP?
 	no: ignore
 	yes:
+		are both src and dst loopback?
+		yes: ignore
+		no:
+			is either src or dst loopback?
+			yes: panic
 		is my IP either src or dst?
 		no: panic
 		yes:
