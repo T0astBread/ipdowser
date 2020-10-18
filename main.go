@@ -12,11 +12,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	torDirectory, err := GetFreshTorGuards(ctx)
-	if err != nil {
-		panic(err)
-	}
-	StartPcap(ctx, ownNets, torDirectory, make(map[string]int))
+	// torDirectory, err := GetFreshTorGuards(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	taggedChan := make(chan TaggedPacket)
+	go StartPcap(ctx, taggedChan, ownNets)
+	DebugPrintPackets(ctx, taggedChan)
 }
 
 func newInterruptContext() context.Context {
