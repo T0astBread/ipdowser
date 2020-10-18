@@ -12,7 +12,7 @@ import (
 
 func StartPcap(
 	ctx context.Context,
-	ownIPAddrs []string,
+	ownNets []IPNetParticipation,
 	torDirectory *TorRelayDirectory,
 	ipReputationMap map[string]int,
 ) {
@@ -58,6 +58,10 @@ func StartPcap(
 			case layers.LayerTypeUDP:
 			}
 		}
+		// "truncated" means the packet is busted
+		if parser.Truncated {
+			panic(fmt.Errorf("Packet truncated"))
+		}
 		// is it not IP?
 		if !(isIPv4 || isIPv6) {
 			continue
@@ -83,14 +87,12 @@ func StartPcap(
 			panic(fmt.Errorf("Only one loopback; Src:", src.String(), "Dst:", dst.String()))
 		}
 		// get the com partner or panic if the conversation is unrelated to us
-		srcStr := src.String()
-		dstStr := dst.String()
 		wereSrc, wereDst := false, false
-		for _, ownIPAddr := range ownIPAddrs {
-			if srcStr == ownIPAddr {
+		for _, netParticipation := range ownNets {
+			if netParticipation.Address.Equal(src) {
 				wereSrc = true
 			}
-			if dstStr == ownIPAddr {
+			if netParticipation.Address.Equal(dst) {
 				wereDst = true
 			}
 		}
@@ -132,10 +134,6 @@ func StartPcap(
 			ipReputationMap[comParterIPStr] = -1
 			fmt.Println("New bad connection to", comParterIPStr)
 			continue
-		}
-		// dunno what that means
-		if parser.Truncated {
-			panic(fmt.Errorf("Packet truncated"))
 		}
 	}
 
