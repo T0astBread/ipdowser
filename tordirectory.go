@@ -19,7 +19,7 @@ type TorRelayDirectory struct {
 }
 
 func (self TorRelayDirectory) IsFresh() bool {
-	return self.RelaysPublished.Add(30 * time.Minute).After(time.Now())
+	return self.RelaysPublished.Add(3 * time.Hour).After(time.Now())
 }
 
 func (self TorRelayDirectory) AnyRelayHasIP(ip net.IP) bool {
