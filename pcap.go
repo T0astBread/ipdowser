@@ -16,6 +16,10 @@ type TaggedPacket struct {
 	Src          net.IP
 	Dst          net.IP
 	ComPartnerIP net.IP
+	TCPSrcPort   layers.TCPPort
+	TCPDstPort   layers.TCPPort
+	UDPSrcPort   layers.UDPPort
+	UDPDstPort   layers.UDPPort
 	Error        error
 	IsIPv4       bool
 	IsIPv6       bool
@@ -81,8 +85,12 @@ func StartPcap(
 				taggedPacket.IsIPv6 = true
 			case layers.LayerTypeTCP:
 				taggedPacket.IsTCP = true
+				taggedPacket.TCPSrcPort = tcp.SrcPort
+				taggedPacket.TCPDstPort = tcp.DstPort
 			case layers.LayerTypeUDP:
 				taggedPacket.IsUDP = true
+				taggedPacket.UDPSrcPort = udp.SrcPort
+				taggedPacket.UDPDstPort = udp.DstPort
 			}
 		}
 		// "truncated" means the packet is busted
