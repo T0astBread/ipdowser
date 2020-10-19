@@ -33,6 +33,8 @@ type TaggedPacket struct {
 	DstIsUs              bool
 	SrcIsInOurNetwork    bool
 	DstIsInOurNetwork    bool
+	SrcIsMulticast       bool
+	DstIsMulticast       bool
 }
 
 func StartPcap(
@@ -127,6 +129,8 @@ func StartPcap(
 		} else if taggedPacket.DstIsUs {
 			taggedPacket.ComPartnerIP = src
 		}
+		taggedPacket.SrcIsMulticast = src.IsMulticast()
+		taggedPacket.DstIsMulticast = dst.IsMulticast()
 		taggedChan <- taggedPacket
 	}
 }
